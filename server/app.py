@@ -12,6 +12,8 @@ from langchain_huggingface.embeddings import HuggingFaceEmbeddings
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.document_loaders import PyPDFLoader, DirectoryLoader
 
+from prompts import qa_prompt
+
 app = Flask(__name__)
 
 load_dotenv()

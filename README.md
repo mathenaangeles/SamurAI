@@ -1,8 +1,6 @@
 <img src="https://github.com/mathenaangeles/SamurAI/blob/main/client/src/app/assets/SAMURAI.png" width="100%" height="100%">
 
-
 # SamurAI
-
 SamurAI is an **AI governance platform** that protects organizations against operational, regulatory, and reputational risks at every stage of the lifecycle - from development to deployment. It does so through three key features.
 
 1. **Project Inventory** - - SamurAI provides a catalog of all AI use cases as a centralized source of truth. This allows users to track and prioritize AI adoptions across their organization, maximizing investments and facilitating demand forecasting.
@@ -13,15 +11,16 @@ SamurAI bridges the gap between innovation and compliance, helping organizations
 
 ## Getting Started 
 ### Server
-1. Navigate to the server directory.
-2. Add a `.env` file with the following contents:
+1. Navigate to the server directory. 
+2. Create a virtual environment and activate it.
+3. Add a `.env` file with the following contents:
 ```
 AI71_API_KEY = <YOUR AI71 API KEY>
 AI71_BASE_URL = <YOUR AI71 BASE URL>
 TOKENIZERS_PARALLELISM = False
 ```
-3. Run `pip install -r requirements.txt` to install all dependencies.
-4. Start the server by running `python -m flask run`.
+4. Run `pip install -r requirements.txt` to install all dependencies.
+5. Start the server by running `python -m flask run`.
 
 ### Client
 1. Navigate to the client directory.
