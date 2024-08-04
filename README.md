@@ -12,7 +12,6 @@ SamurAI is an **AI governance platform** that protects organizations against ope
 SamurAI bridges the gap between innovation and compliance, helping organizations thrive by safeguarding them against risks.
 
 ## Getting Started 
-<hr/>
 ### Server
 1. Navigate to the server directory.
 2. Add a `.env` file with the following contents:
