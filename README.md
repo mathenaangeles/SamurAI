@@ -25,5 +25,5 @@ TOKENIZERS_PARALLELISM = False
 ### Client
 1. Navigate to the client directory.
 2. Run `npm install` to install all dependencies.
-3. Start the client by running `npm run dev`.
+3. Start the client by running `npm start`.
 
