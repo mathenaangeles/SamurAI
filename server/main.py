@@ -1,8 +1,9 @@
 import os
 from models import Project
 from config import app, db
-from prompts import qa_prompt, eu_prompt, output_parser
 from flask import request, jsonify
+from werkzeug.utils import secure_filename
+from prompts import qa_prompt, eu_prompt, output_parser
 
 from langchain_chroma import Chroma
 from langchain_openai import ChatOpenAI
@@ -78,14 +79,21 @@ def get_projects():
         json_eu_risk = output_parser.parse(generate_risk(description))
         eu_risk = json_eu_risk['risk']
         eu_risk_reason = json_eu_risk['reason']
+        attachment = request.files.get("attachment")
         if not name or not description or not market:
             return jsonify({"message": "There are missing required field."}), 400
+        file_path = None
+        if attachment:
+            filename = secure_filename(attachment.filename)
+            file_path = os.path.join(app.config['DATA_DIRECTORY'], filename)
+            attachment.save(file_path)
         new_project = Project(
             name=name, 
             description=description,
             market=market,
             eu_risk = eu_risk,
-            eu_risk_reason = eu_risk_reason
+            eu_risk_reason = eu_risk_reason,
+            attachment = file_path,
         )
         try:
             db.session.add(new_project)

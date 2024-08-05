@@ -11,6 +11,7 @@ class Project(db.Model):
     created_date = db.Column(db.DateTime, default=datetime.now(), nullable=False)
     eu_risk = db.Column(Enum('Unacceptable', 'High', 'Limited', 'Minimal', name='risk_level'), nullable=True)
     eu_risk_reason = db.Column(db.Text(), unique=False, nullable=True)
+    attachment = db.Column(db.String(255), unique=False, nullable=True) 
     def to_json(self):
         return {
             "id": self.id,
@@ -20,5 +21,6 @@ class Project(db.Model):
             "createdDate": self.created_date,
             "euRisk": self.eu_risk,
             "euRiskReason": self.eu_risk_reason,
+            "file_path": self.file_path,
         }
 
