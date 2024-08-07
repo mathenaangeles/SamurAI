@@ -18,6 +18,11 @@ SamurAI bridges the gap between innovation and compliance, helping organizations
 AI71_API_KEY = <YOUR AI71 API KEY>
 AI71_BASE_URL = <YOUR AI71 BASE URL>
 TOKENIZERS_PARALLELISM = False
+SQLALCHEMY_DATABASE_URI = "sqlite:///samurai.db"
+SQLALCHEMY_TRACK_MODIFICATIONS = False
+FLASK_APP = "main.py"
+DATA_DIRECTORY = "./data"
+FLASK_DEBUG=1
 ```
 4. Run `pip install -r requirements.txt` to install all dependencies.
 5. Start the server by running `python -m flask run`.

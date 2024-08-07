@@ -1,4 +1,5 @@
 import os
+import json
 from models import Project
 from config import app, db
 from flask import request, jsonify
@@ -9,10 +10,10 @@ from langchain_chroma import Chroma
 from langchain_openai import ChatOpenAI
 from langchain.storage import LocalFileStore
 from langchain.embeddings import CacheBackedEmbeddings
-from langchain_core.runnables import RunnablePassthrough
 from langchain_core.output_parsers import StrOutputParser
 from langchain_huggingface.embeddings import HuggingFaceEmbeddings
 from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain_core.runnables import RunnablePassthrough, RunnableParallel
 from langchain_community.document_loaders import PyPDFLoader, DirectoryLoader
 
 AI71_API_KEY = os.getenv('AI71_API_KEY')
@@ -43,8 +44,8 @@ store = LocalFileStore("./cache/")
 cached_embeddings = CacheBackedEmbeddings.from_bytes_store(
     embeddings_model, store
 )
-db = Chroma.from_documents(chunks, cached_embeddings)
-retriever = db.as_retriever(search_kwargs={"k": 3})
+chroma_db = Chroma.from_documents(chunks, cached_embeddings)
+retriever = chroma_db.as_retriever(search_kwargs={"k": 3})
 
 def format_docs(docs):
     return "\n\n".join(doc.page_content for doc in docs)
@@ -72,7 +73,7 @@ def generate_risk(description):
 @app.route("/projects", methods=["POST", "GET"])
 def get_projects():
     if request.method == 'POST':
-        data = request.json
+        data = request.form
         name = data.get("name")
         description = data.get("description")
         market = data.get("market")
@@ -88,9 +89,9 @@ def get_projects():
             file_path = os.path.join(app.config['DATA_DIRECTORY'], filename)
             attachment.save(file_path)
         new_project = Project(
-            name=name, 
-            description=description,
-            market=market,
+            name = name, 
+            description = description,
+            market = market,
             eu_risk = eu_risk,
             eu_risk_reason = eu_risk_reason,
             attachment = file_path,
@@ -120,12 +121,58 @@ def get_project(id):
         db.session.commit()
         return jsonify({"message": "Project has been successfully deleted."}), 200
     else:
-        return project, 200
+        return project.to_json(), 200
 
-# @app.route("/")
-# def chat():
-#     output = generate_risk("This AI system uses facial recognition to enhance security by identifying individuals in real-time.")
-#     return f"<p>{output}</p>"
+def format_answer(answer):
+    if answer.endswith("User:"):
+        return answer[:-len("User:")].strip()
+    return answer
+    
+def extract_sources(response):
+    sources = []
+    if 'context' in response and isinstance(response['context'], list):
+        for doc in response['context']:
+            source = doc.metadata.get('source') 
+            if source and source not in sources:
+                sources.append(source)
+    return sources
+
+@app.route("/", methods=["POST"])
+def chat():
+    query = request.json.get("query", "")
+    if not query:
+        return jsonify({"error": "Ask me a question."}), 400
+    qa_chain_from_docs = (
+        RunnablePassthrough.assign(context=(lambda x: format_docs(x["context"])))
+        | qa_prompt
+        | llm
+        | StrOutputParser()
+    )
+    qa_chain_with_sources = RunnableParallel(
+        {"context": retriever, "question": RunnablePassthrough()}
+    ).assign(answer=qa_chain_from_docs)
+    response = qa_chain_with_sources.invoke(query)
+    response_dict = {
+        "answer": format_answer(response.get("answer", "")),
+        "context": extract_sources(response)
+    }
+    return jsonify(response_dict), 200
+
+@app.route("/files", methods=["GET"])
+def get_files():
+    data_dir = './data'
+    files = []
+    for filename in os.listdir(data_dir):
+        filepath = os.path.join(data_dir, filename)
+        if os.path.isfile(filepath):
+            file_info = {
+                'filename': filename,
+                'size': os.path.getsize(filepath),
+                'creation_date': os.path.getctime(filepath),
+                'last_modified_date': os.path.getmtime(filepath)
+            }
+            files.append(file_info)
+    return jsonify(files), 200
 
 if __name__ == '__main__':
     with app.app_context():

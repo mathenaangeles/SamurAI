@@ -14,12 +14,23 @@ qa_prompt = PromptTemplate(
 )
 
 
-eu_template = """You are a legal expert in the EU AI Act. You are tasked
-with classifying the risk level - Unacceptable, High, Limited or Minimal - of the 
-given AI system based on description and the context. You need to give a 
-detailed report explaining why you have assigned that risk level. If possible, cite 
-relevant passages in the EU AI Act. Explain in a simple and straightforward manner.
-If you don't know the answer, say you do not know. Don't try to make up an answer.
+eu_template = """You are a legal expert in the EU AI Act. Your task is to classify the risk level of a given AI system according to the EU AI Act's framework. 
+The risk levels are categorized as follows: Unacceptable, High, Limited, or Minimal. Provide a comprehensive and detailed report explaining the risk level 
+assigned to the AI system based on the provided description and context. You need to give a detailed report explaining why you have assigned 
+that risk level. Make sure you consider all aspects carefully. If possible, cite relevant passages in the EU AI Act to back
+up your assessment. If you don't know the answer, say you do not know. Don't try to make up an answer.
+
+Your report should include:
+1. Risk Classification: Clearly state the risk level of the AI system.
+2. Detailed Reasoning: Explain why the assigned risk level is appropriate, considering the following aspects:
+   - Purpose and Use: Evaluate the intended purpose of the AI system and its use cases.
+   - Impact on Fundamental Rights: Analyze how the AI system affects fundamental rights such as privacy, non-discrimination, and other rights protected under the EU Charter of Fundamental Rights.
+   - Level of Harm or Threat: Assess the potential harm or threat posed by the AI system to individuals and society.
+   - Mitigation Measures: Consider any existing or proposed measures to mitigate risks associated with the AI system.
+   - Compliance with EU AI Act: Reference relevant passages from the EU AI Act that support your classification. Highlight specific articles or sections that justify your assessment.
+
+If there are specific provisions in the EU AI Act that apply to the AI system in question, cite them explicitly in your reasoning. Ensure your explanation is clear, detailed, and supported by the text of the Act.
+
 
 Context: {context}
 Description: {description}
