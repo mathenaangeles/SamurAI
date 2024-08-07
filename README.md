@@ -1,4 +1,4 @@
-<img src="https://github.com/mathenaangeles/SamurAI/blob/main/client/src/app/assets/SAMURAI.png" width="100%" height="100%">
+<img src="https://github.com/mathenaangeles/SamurAI/blob/main/client/src/assets/SAMURAI.png" width="100%" height="100%">
 
 # SamurAI
 SamurAI is an **AI governance platform** that protects organizations against operational, regulatory, and reputational risks at every stage of the lifecycle - from development to deployment. It does so through three key features.
