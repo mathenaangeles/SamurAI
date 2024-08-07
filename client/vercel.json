@@ -1,0 +1,12 @@
+{
+    "rewrites": [
+      {
+        "source": "/:path*",
+        "destination": "https://mathenaangeles.pythonanywhere.com/:path*"
+      },
+      {
+        "source": "/:path*/",
+        "destination": "https://mathenaangeles.pythonanywhere.com/:path*/"
+      }
+    ]
+  }
