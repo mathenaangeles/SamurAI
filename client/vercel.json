@@ -2,11 +2,11 @@
     "rewrites": [
       {
         "source": "/:path*",
-        "destination": "https://mathenaangeles.pythonanywhere.com/:path*"
+        "destination": "https://samurai-server.vercel.app/:path*"
       },
       {
         "source": "/:path*/",
-        "destination": "https://mathenaangeles.pythonanywhere.com/:path*/"
+        "destination": "https://samurai-server.vercel.app/:path*/"
       }
     ]
   }
